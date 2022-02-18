@@ -24,16 +24,25 @@ public class PlayerBehavior : MonoBehaviour
 
     public float speedMultiplier = 2f;
     private bool pogoAcquired = false;
+
+    private GameBehavior _gameManager;
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<CapsuleCollider>();
+
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameBehavior>();
     }
     void OnCollisionEnter(Collision collision)
     {
         switch (collision.gameObject.name)
         {
+            case "Enemy":
+                {
+                    _gameManager.HP -= 1;
+                    break;
+                }
             case "Health_Pickup":
                 {
                     Debug.Log("Health Item collected!");

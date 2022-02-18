@@ -6,13 +6,30 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     public Transform player;
-    private bool followMode;
+    //private bool followMode;
 
     public Transform patrolRoute;
     public List<Transform> locations;
 
     private int locationIndex = 0;
     private NavMeshAgent agent;
+
+    private int _lives = 3;
+    public int EnemyLives
+    {
+        get {return _lives; }
+
+        private set
+        {
+        _lives = value;
+
+            if (_lives <= 0)
+            {
+                Destroy(this.gameObject);
+                Debug.Log("Enemy down, victory royale.");
+            }
+        }
+    }
     // Start is called before the first frame update
     void Start()
     {
@@ -31,7 +48,16 @@ public class EnemyBehavior : MonoBehaviour
         {
             MoveToNextPatrolLocation();
         }
+        /*if (followMode)
+        {
+            ImprovedAI();
+        }*/
     }
+
+    /*void ImprovedAI()
+    {
+        agent.destination = player.position;
+    }*/
 
     void InitializePatrolRoute()
     {
@@ -57,13 +83,9 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            followMode = true;
+            //followMode = true;
             agent.destination = player.position;
             Debug.Log("Player detected - attack!");
-        }
-        while (followMode)
-        {
-            agent.destination = player.position;
         }
     }
 
@@ -71,8 +93,17 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            followMode = false;
+            //followMode = false;
             Debug.Log("Player out of range, resume patrol.");
+        }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.name == "Bullet(Clone)")
+        {
+            EnemyLives -= 1;
+            Debug.Log("That man has a family! D:");
         }
     }
 }
