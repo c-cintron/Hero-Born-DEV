@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class PlayerBehavior : MonoBehaviour
 {
+    public float effectDuration = 5f;
+
     public float moveSpeed = 10f;
     public float rotateSpeed = 75f;
     public float jumpVelocity = 5f;
@@ -19,11 +21,46 @@ public class PlayerBehavior : MonoBehaviour
 
     private Rigidbody _rb;
     private CapsuleCollider _col;
+
+    public float speedMultiplier = 2f;
+    private bool pogoAcquired = false;
     // Start is called before the first frame update
     void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _col = GetComponent<CapsuleCollider>();
+    }
+    void OnCollisionEnter(Collision collision)
+    {
+        switch (collision.gameObject.name)
+        {
+            case "Health_Pickup":
+                {
+                    Debug.Log("Health Item collected!");
+                    Destroy(collision.gameObject.transform.parent.gameObject);
+                    break;
+                }
+            case "Strength_Pickup":
+                {
+                    Debug.Log("Strength Item collected!");
+                    Destroy(collision.gameObject.transform.parent.gameObject);
+                    break;
+                }
+            case "Speed_Pickup":
+                {
+                    Debug.Log("Speed Item collected!");
+                    SpeedBoost();
+                    Destroy(collision.gameObject.transform.parent.gameObject);
+                    break;
+                }
+            case "Pogo_Pickup":
+                {
+                    Debug.Log("Pogo Item collected!");
+                    pogoOn();
+                    Destroy(collision.gameObject.transform.parent.gameObject);
+                    break;
+                }
+        }
     }
 
     // Update is called once per frame
@@ -35,7 +72,7 @@ public class PlayerBehavior : MonoBehaviour
         this.transform.Translate(Vector3.forward * vInput * Time.deltaTime);
         this.transform.Rotate(Vector3.up * hInput * Time.deltaTime);
         */
-        if (Input.GetKeyDown(KeyCode.Space) && IsGrounded())
+        if ((Input.GetKeyDown(KeyCode.Space) || pogoAcquired) && IsGrounded())
         {
             _rb.AddForce(Vector3.up * jumpVelocity, ForceMode.Impulse);
         }
@@ -64,5 +101,27 @@ public class PlayerBehavior : MonoBehaviour
         bool grounded = Physics.CheckCapsule(_col.bounds.center, capsuleBottom, distanceToGround, groundLayer, QueryTriggerInteraction.Ignore);
 
         return grounded;
+    }
+
+    void SpeedBoost()
+    {
+        this.moveSpeed *= speedMultiplier;
+        Invoke("SpeedBoostEnd", effectDuration);
+    }
+
+    void SpeedBoostEnd()
+    {
+        this.moveSpeed /= speedMultiplier;
+    }
+
+    void pogoOn()
+    {
+        pogoAcquired = true;
+        Invoke("pogoOff", effectDuration);
+    }
+
+    void pogoOff()
+    {
+        pogoAcquired = false;
     }
 }

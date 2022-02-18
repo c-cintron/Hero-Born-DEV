@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ItemBehavior : MonoBehaviour
 {
-    public GameBehavior gameManager;
+    /*public GameBehavior gameManager;
 
     void Start()
     {
@@ -31,5 +31,5 @@ public class ItemBehavior : MonoBehaviour
             }
             gameManager.Items += 1;
         }
-    }
+    }*/
 }
