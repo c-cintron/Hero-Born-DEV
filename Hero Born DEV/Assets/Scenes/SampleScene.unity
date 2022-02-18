@@ -3715,6 +3715,7 @@ MonoBehaviour:
   showWinScreen: 0
   labelText: Collect all 4 items and win your freedom!
   maxItems: 4
+  showLossScreen: 0
 --- !u!4 &1822762699
 Transform:
   m_ObjectHideFlags: 0

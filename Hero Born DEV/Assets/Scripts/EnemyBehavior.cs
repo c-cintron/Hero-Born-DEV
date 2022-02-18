@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class EnemyBehavior : MonoBehaviour
 {
     public Transform player;
-    //private bool followMode;
+    private bool followMode;
 
     public Transform patrolRoute;
     public List<Transform> locations;
@@ -14,28 +14,32 @@ public class EnemyBehavior : MonoBehaviour
     private int locationIndex = 0;
     private NavMeshAgent agent;
 
+    private GameBehavior _gameManager;
+
     private int _lives = 3;
     public int EnemyLives
     {
         get {return _lives; }
 
-        private set
+        set
         {
         _lives = value;
 
             if (_lives <= 0)
             {
                 Destroy(this.gameObject);
-                Debug.Log("Enemy down, victory royale.");
             }
         }
     }
+
     // Start is called before the first frame update
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
 
         player = GameObject.Find("Player").transform;
+
+        _gameManager = GameObject.Find("Game Manager").GetComponent<GameBehavior>();
 
         InitializePatrolRoute();
 
@@ -48,16 +52,16 @@ public class EnemyBehavior : MonoBehaviour
         {
             MoveToNextPatrolLocation();
         }
-        /*if (followMode)
+        if (followMode)
         {
             ImprovedAI();
-        }*/
+        }
     }
 
-    /*void ImprovedAI()
+    void ImprovedAI()
     {
         agent.destination = player.position;
-    }*/
+    }
 
     void InitializePatrolRoute()
     {
@@ -83,7 +87,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            //followMode = true;
+            followMode = true;
             agent.destination = player.position;
             Debug.Log("Player detected - attack!");
         }
@@ -93,7 +97,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (other.name == "Player")
         {
-            //followMode = false;
+            followMode = false;
             Debug.Log("Player out of range, resume patrol.");
         }
     }
@@ -102,6 +106,7 @@ public class EnemyBehavior : MonoBehaviour
     {
         if (collision.gameObject.name == "Bullet(Clone)")
         {
+            _gameManager.EnemyLives -= 1;
             EnemyLives -= 1;
             Debug.Log("That man has a family! D:");
         }

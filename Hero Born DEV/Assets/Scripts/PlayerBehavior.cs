@@ -26,6 +26,7 @@ public class PlayerBehavior : MonoBehaviour
     private bool pogoAcquired = false;
 
     private GameBehavior _gameManager;
+
     // Start is called before the first frame update
     void Start()
     {

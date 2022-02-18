@@ -6,11 +6,10 @@ using UnityEngine.SceneManagement;
 public class GameBehavior : MonoBehaviour
 {
     public bool showWinScreen = false;
+    public bool showLossScreen = false;
 
     public string labelText = "Collect all 4 items and win your freedom!";
     public int maxItems = 4;
-
-    public bool showLossScreen = false;
 
     private int _itemsCollected = 0;
     public int Items
@@ -53,6 +52,23 @@ public class GameBehavior : MonoBehaviour
             else
             {
                 labelText = "oof";
+            }
+        }
+    }
+
+    private int _lives = 3;
+    public int EnemyLives
+    {
+        get { return _lives; }
+
+        set
+        {
+            _lives = value;
+
+            if (_lives <= 0)
+            {
+                showWinScreen = true;
+                Time.timeScale = 0;
             }
         }
     }
