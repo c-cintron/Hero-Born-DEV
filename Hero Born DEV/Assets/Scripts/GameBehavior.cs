@@ -2,9 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using CustomExtensions;
 
-public class GameBehavior : MonoBehaviour
+public class GameBehavior : MonoBehaviour, IManager
 {
+
+    private string _state;
+
+    public string State
+    {
+        get { return _state; }
+        set { _state = value; }
+    }
+
     public bool showWinScreen = false;
     public bool showLossScreen = false;
 
@@ -38,7 +48,7 @@ public class GameBehavior : MonoBehaviour
     {
         get { return _playerHP; }
 
-        set 
+        set
         {
             _playerHP = value;
             Debug.LogFormat("Lives: {0}", _playerHP);
@@ -73,42 +83,37 @@ public class GameBehavior : MonoBehaviour
         }
     }
 
-    void RestartLevel()
+    void Start()
     {
-        SceneManager.LoadScene(0);
-        Time.timeScale = 1.0f;
+        Initialize();
+    }
+
+    public void Initialize()
+    {
+        _state = "Manager initialized..";
+        _state.FancyDebug();
+        Debug.Log(_state);
     }
 
     void OnGUI()
     {
         GUI.Box(new Rect(20, 20, 150, 25), "Player Health:" + _playerHP);
         GUI.Box(new Rect(20, 50, 150, 25), "Items Collected:" + _itemsCollected);
-        GUI.Label(new Rect(Screen.width / 2-100, Screen.height - 50, 300, 50), labelText);
+        GUI.Label(new Rect(Screen.width / 2 - 100, Screen.height - 50, 300, 50), labelText);
 
         if (showWinScreen)
         {
             if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "YOU WON!"))
             {
-                RestartLevel();
+                Utilities.RestartLevel(0);
             }
         }
         if (showLossScreen)
         {
             if (GUI.Button(new Rect(Screen.width / 2 - 100, Screen.height / 2 - 50, 200, 100), "Try Again Buddy! :)"))
             {
-                RestartLevel();
+                Utilities.RestartLevel();
             }
         }
-}
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }
